@@ -50,8 +50,8 @@ export default function App() {
             }
           />
 
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Navigate to="/candidates" replace />} />
+          <Route path="*" element={<Navigate to="/candidates" replace />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

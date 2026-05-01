@@ -271,7 +271,7 @@ export function SuperAdminView() {
       email: createForm.email.trim(),
       password: createForm.password,
       role: createForm.role,
-      tenant_id: createForm.tenant_id || null,
+      tenant_id: createForm.role === 'RECRUITER' ? null : (createForm.tenant_id || null),
       phone: createForm.phone || null,
     })
     setCreateSaving(false)
@@ -722,7 +722,7 @@ export function SuperAdminView() {
               <Select value={createForm.tenant_id} onValueChange={v => setCreateForm(f => ({ ...f, tenant_id: v }))}>
                 <SelectTrigger><SelectValue placeholder={createForm.role === 'RECRUITER' ? 'None (cross-tenant)' : 'Select tenant…'} /></SelectTrigger>
                 <SelectContent>
-                  {createForm.role === 'RECRUITER' && <SelectItem value="">None (cross-tenant)</SelectItem>}
+                  {createForm.role === 'RECRUITER' && <SelectItem value="none">None (cross-tenant)</SelectItem>}
                   {tenants.map(t => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
                 </SelectContent>
               </Select>

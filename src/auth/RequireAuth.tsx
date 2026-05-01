@@ -22,11 +22,11 @@ export function RequireAuth({ children, roles, requireSuperAdmin, feature }: Req
   }
 
   if (!supabaseUser) return <Navigate to="/login" replace />
-  if (requireSuperAdmin && !isSuperAdmin) return <Navigate to="/dashboard" replace />
-  if (roles && profile && !isSuperAdmin && !roles.includes(profile.role)) return <Navigate to="/dashboard" replace />
+  if (requireSuperAdmin && !isSuperAdmin) return <Navigate to="/candidates" replace />
+  if (roles && profile && !isSuperAdmin && !roles.includes(profile.role)) return <Navigate to="/candidates" replace />
 
-  // Feature gate: superadmin bypasses; disabled feature → back to dashboard
-  if (feature && !isSuperAdmin && !features[feature]) return <Navigate to="/dashboard" replace />
+  // Feature gate: superadmin bypasses; disabled feature → back to candidates
+  if (feature && !isSuperAdmin && !features[feature]) return <Navigate to="/candidates" replace />
 
   return <>{children}</>
 }

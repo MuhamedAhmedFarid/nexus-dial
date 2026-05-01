@@ -32,6 +32,8 @@ const STATUS: Record<CandidateStatus, { label: string; cls: string }> = {
   reviewed:    { label: 'Reviewed',    cls: 'bg-blue-500/20   text-blue-400   border-blue-500/30'   },
   shortlisted: { label: 'Shortlisted', cls: 'bg-green-500/20  text-green-400  border-green-500/30'  },
   rejected:    { label: 'Rejected',    cls: 'bg-red-500/20    text-red-400    border-red-500/30'     },
+  hired:       { label: 'Hired',       cls: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' },
+  training:    { label: 'Training',    cls: 'bg-purple-500/20  text-purple-400  border-purple-500/30'  },
 }
 
 const BLANK: FormState = {
@@ -119,10 +121,20 @@ function RecruiterCandidateCard({ c, onEdit, onDelete, onStatus }: {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-2 border-t border-white/5">
-          <Badge variant="outline" className={cn('text-[10px]', STATUS[s].cls)}>
-            {STATUS[s].label}
-          </Badge>
+        <div className="flex items-center justify-between pt-2 border-t border-white/5 gap-2">
+          <Select value={s} onValueChange={(val) => onStatus(c.id, val as CandidateStatus)}>
+            <SelectTrigger className={cn('h-7 text-[10px] w-auto min-w-[100px] border-none focus:ring-0', STATUS[s].cls)}>
+              <SelectValue>{STATUS[s].label}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {(Object.keys(STATUS) as CandidateStatus[]).map(k => (
+                <SelectItem key={k} value={k} className="text-[11px]">
+                  {STATUS[k].label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          
           {c.rating !== null ? (
             <span className="flex items-center gap-1 text-xs text-muted-foreground">
               <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />

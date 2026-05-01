@@ -23,13 +23,7 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Dashboard',   to: '/dashboard',  icon: LayoutDashboard, roles: 'all' },
-  { label: 'Employees',   to: '/employees',  icon: Users,           roles: ['OWNER', 'ADMIN', 'HR'],      feature: 'hr' },
-  { label: 'Invoices',    to: '/invoices',   icon: FileText,        roles: ['OWNER', 'ADMIN', 'BILLING'],  feature: 'billing' },
-  { label: 'Payroll',     to: '/payroll',    icon: DollarSign,      roles: ['OWNER', 'ADMIN', 'PAYROLL'],  feature: 'payroll' },
-  { label: 'Dialer',      to: '/dialer',     icon: Phone,           roles: 'all',                          feature: 'dialer' },
   { label: 'Candidates',  to: '/candidates', icon: UserCheck,       roles: ['OWNER', 'ADMIN', 'HR'],       feature: 'recruitment' },
-  { label: 'Recruitment', to: '/recruiter',  icon: Briefcase,       roles: ['RECRUITER'] },
   { label: 'Settings',    to: '/settings',   icon: Settings,        roles: ['OWNER', 'ADMIN'] },
 ]
 

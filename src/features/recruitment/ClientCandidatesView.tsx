@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Mic2, FileText, Star, Loader2, UserCheck } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -15,6 +16,8 @@ const STATUS: Record<CandidateStatus, { label: string; cls: string }> = {
   reviewed:    { label: 'Reviewed',    cls: 'bg-blue-500/20   text-blue-400   border-blue-500/30'   },
   shortlisted: { label: 'Shortlisted', cls: 'bg-green-500/20  text-green-400  border-green-500/30'  },
   rejected:    { label: 'Rejected',    cls: 'bg-red-500/20    text-red-400    border-red-500/30'     },
+  hired:       { label: 'Hired',       cls: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' },
+  training:    { label: 'Training',    cls: 'bg-purple-500/20  text-purple-400  border-purple-500/30'  },
 }
 
 // ── Rating widget ──────────────────────────────────────────────────────────────
@@ -50,9 +53,10 @@ function RatingPicker({ value, onChange, disabled }: {
 }
 
 // ── Candidate card ─────────────────────────────────────────────────────────────
-function CandidateCard({ candidate, onSave }: {
+function CandidateCard({ candidate, onSave, onStatusChange }: {
   candidate: Candidate
   onSave: (id: string, rating: number | null, notes: string) => Promise<void>
+  onStatusChange: (id: string, status: CandidateStatus) => Promise<void>
 }) {
   const [rating, setRating]   = useState<number | null>(candidate.rating)
   const [notes, setNotes]     = useState(candidate.rating_notes ?? '')
@@ -91,9 +95,19 @@ function CandidateCard({ candidate, onSave }: {
               <p className="text-xs text-muted-foreground mt-0.5">{candidate.position}</p>
             </div>
           </div>
-          <Badge variant="outline" className={cn('text-[10px] shrink-0', STATUS[s]?.cls)}>
-            {STATUS[s]?.label ?? s}
-          </Badge>
+          
+          <Select value={s} onValueChange={(val) => onStatusChange(candidate.id, val as CandidateStatus)}>
+            <SelectTrigger className={cn('h-7 text-[10px] w-auto min-w-[100px] border-none focus:ring-0 shrink-0', STATUS[s]?.cls)}>
+              <SelectValue>{STATUS[s]?.label ?? s}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {(Object.keys(STATUS) as CandidateStatus[]).map(k => (
+                <SelectItem key={k} value={k} className="text-[11px]">
+                  {STATUS[k].label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Links */}
@@ -190,12 +204,24 @@ export function ClientCandidatesView() {
     toast.success('Saved')
   }
 
+  async function handleStatusChange(id: string, status: CandidateStatus) {
+    const { error } = await supabase
+      .from('candidates')
+      .update({ status })
+      .eq('id', id)
+    if (error) { toast.error('Failed to update status'); return }
+    setCandidates(prev => prev.map(c => c.id === id ? { ...c, status } : c))
+    toast.success(`Marked as ${STATUS[status].label}`)
+  }
+
   const counts = {
     all:         candidates.length,
     pending:     candidates.filter(c => c.status === 'pending').length,
     reviewed:    candidates.filter(c => c.status === 'reviewed').length,
     shortlisted: candidates.filter(c => c.status === 'shortlisted').length,
     rejected:    candidates.filter(c => c.status === 'rejected').length,
+    hired:       candidates.filter(c => c.status === 'hired').length,
+    training:    candidates.filter(c => c.status === 'training').length,
   }
 
   const visible = tab === 'all' ? candidates : candidates.filter(c => c.status === tab)
@@ -212,7 +238,7 @@ export function ClientCandidatesView() {
 
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="bg-secondary">
-          {(['all', 'pending', 'reviewed', 'shortlisted', 'rejected'] as const).map(s => (
+          {(['all', 'pending', 'reviewed', 'shortlisted', 'rejected', 'hired', 'training'] as const).map(s => (
             <TabsTrigger key={s} value={s} className="text-xs">
               {s === 'all' ? 'All' : STATUS[s].label}
               <span className="ml-1.5 text-[10px] opacity-60">({counts[s]})</span>
@@ -236,7 +262,7 @@ export function ClientCandidatesView() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {visible.map(c => (
-            <CandidateCard key={c.id} candidate={c} onSave={handleSave} />
+            <CandidateCard key={c.id} candidate={c} onSave={handleSave} onStatusChange={handleStatusChange} />
           ))}
         </div>
       )}

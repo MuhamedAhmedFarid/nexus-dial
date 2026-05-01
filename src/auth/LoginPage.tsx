@@ -19,7 +19,7 @@ export function LoginPage() {
   // Redirect once both auth user AND profile are loaded — profile determines superadmin vs normal route
   useEffect(() => {
     if (!authLoading && supabaseUser && profile) {
-      navigate(profile.is_superadmin ? '/superadmin' : '/dashboard', { replace: true })
+      navigate(profile.is_superadmin ? '/superadmin' : '/candidates', { replace: true })
     }
   }, [supabaseUser, profile, authLoading, navigate])
 
