@@ -56,6 +56,7 @@ function RecruiterCandidateCard({ c, onEdit, onDelete, onStatus }: {
 }) {
   const initials = c.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
   const s = c.status
+  const StatusIcon = STATUS[s].icon
 
   return (
     <Card className="bg-card border-white/10">
@@ -124,7 +125,7 @@ function RecruiterCandidateCard({ c, onEdit, onDelete, onStatus }: {
         {/* Footer */}
         <div className="flex items-center justify-between pt-2 border-t border-white/5">
           <Badge variant="outline" className={cn('text-[10px] flex items-center gap-1', STATUS[s].cls)}>
-            {STATUS[s].icon && <STATUS.icon className="h-3 w-3" />}
+            {StatusIcon && <StatusIcon className="h-3 w-3" />}
             {STATUS[s].label}
           </Badge>
           {c.rating !== null ? (

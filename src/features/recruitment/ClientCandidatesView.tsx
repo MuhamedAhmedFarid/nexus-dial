@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Mic2, FileText, Star, Loader2, UserCheck } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -11,7 +10,7 @@ import type { Candidate, CandidateStatus } from '@/types/database'
 import { toast } from 'sonner'
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ChevronDown, CheckCircle2, UserPlus, GraduationCap, XCircle, Clock, Search } from 'lucide-react'
+import { CheckCircle2, UserPlus, GraduationCap, XCircle, Clock, Search } from 'lucide-react'
 
 const STATUS: Record<CandidateStatus, { label: string; cls: string; icon: any }> = {
   pending:     { label: 'Pending',     cls: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20 hover:bg-yellow-500/20', icon: Clock },
