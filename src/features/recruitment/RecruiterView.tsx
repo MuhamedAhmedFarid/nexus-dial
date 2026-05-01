@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   Briefcase, Plus, Trash2, Loader2, Mic2, FileText,
   Building2, Search, Star, MoreHorizontal, Pencil, AlertTriangle,
+  Clock, CheckCircle2, GraduationCap, UserPlus, XCircle
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -27,6 +28,7 @@ import { toast } from 'sonner'
 // ── Types ──────────────────────────────────────────────────────────────────────
 type CandidateWithTenant = Candidate & { tenant?: { id: string; name: string } | null }
 
+<<<<<<< HEAD
 const STATUS: Record<CandidateStatus, { label: string; cls: string }> = {
   pending:     { label: 'Pending',     cls: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
   reviewed:    { label: 'Reviewed',    cls: 'bg-blue-500/20   text-blue-400   border-blue-500/30'   },
@@ -34,6 +36,15 @@ const STATUS: Record<CandidateStatus, { label: string; cls: string }> = {
   rejected:    { label: 'Rejected',    cls: 'bg-red-500/20    text-red-400    border-red-500/30'     },
   hired:       { label: 'Hired',       cls: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' },
   training:    { label: 'Training',    cls: 'bg-purple-500/20  text-purple-400  border-purple-500/30'  },
+=======
+const STATUS: Record<CandidateStatus, { label: string; cls: string; icon: any }> = {
+  pending:     { label: 'Pending',     cls: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20', icon: Clock },
+  good:        { label: 'Good',        cls: 'bg-blue-500/10 text-blue-500 border-blue-500/20',     icon: CheckCircle2 },
+  interviewed: { label: 'Interviewed', cls: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20', icon: Search },
+  training:    { label: 'Training',    cls: 'bg-purple-500/10 text-purple-500 border-purple-500/20', icon: GraduationCap },
+  hired:       { label: 'Hired',       cls: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20', icon: UserPlus },
+  rejected:    { label: 'Rejected',    cls: 'bg-red-500/10 text-red-500 border-red-500/20',         icon: XCircle },
+>>>>>>> a35c62e0c3c5be7a28cea780bcca1ddd4cb9ae7d
 }
 
 const BLANK: FormState = {
@@ -121,6 +132,7 @@ function RecruiterCandidateCard({ c, onEdit, onDelete, onStatus }: {
         </div>
 
         {/* Footer */}
+<<<<<<< HEAD
         <div className="flex items-center justify-between pt-2 border-t border-white/5 gap-2">
           <Select value={s} onValueChange={(val) => onStatus(c.id, val as CandidateStatus)}>
             <SelectTrigger className={cn('h-7 text-[10px] w-auto min-w-[100px] border-none focus:ring-0', STATUS[s].cls)}>
@@ -135,6 +147,13 @@ function RecruiterCandidateCard({ c, onEdit, onDelete, onStatus }: {
             </SelectContent>
           </Select>
           
+=======
+        <div className="flex items-center justify-between pt-2 border-t border-white/5">
+          <Badge variant="outline" className={cn('text-[10px] flex items-center gap-1', STATUS[s].cls)}>
+            {STATUS[s].icon && <STATUS.icon className="h-3 w-3" />}
+            {STATUS[s].label}
+          </Badge>
+>>>>>>> a35c62e0c3c5be7a28cea780bcca1ddd4cb9ae7d
           {c.rating !== null ? (
             <span className="flex items-center gap-1 text-xs text-muted-foreground">
               <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
@@ -364,7 +383,7 @@ export function RecruiterView() {
   const stats = [
     { label: 'Total',          value: candidates.length },
     { label: 'Awaiting Rating', value: candidates.filter(c => c.rating === null).length },
-    { label: 'Shortlisted',    value: candidates.filter(c => c.status === 'shortlisted').length },
+    { label: 'Hired',          value: candidates.filter(c => c.status === 'hired').length },
     { label: 'Rated by Client', value: candidates.filter(c => c.rating !== null).length },
   ]
 

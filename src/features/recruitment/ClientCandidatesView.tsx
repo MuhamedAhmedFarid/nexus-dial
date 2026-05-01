@@ -16,8 +16,6 @@ const STATUS: Record<CandidateStatus, { label: string; cls: string }> = {
   reviewed:    { label: 'Reviewed',    cls: 'bg-blue-500/20   text-blue-400   border-blue-500/30'   },
   shortlisted: { label: 'Shortlisted', cls: 'bg-green-500/20  text-green-400  border-green-500/30'  },
   rejected:    { label: 'Rejected',    cls: 'bg-red-500/20    text-red-400    border-red-500/30'     },
-  hired:       { label: 'Hired',       cls: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' },
-  training:    { label: 'Training',    cls: 'bg-purple-500/20  text-purple-400  border-purple-500/30'  },
 }
 
 // ── Rating widget ──────────────────────────────────────────────────────────────
@@ -53,10 +51,9 @@ function RatingPicker({ value, onChange, disabled }: {
 }
 
 // ── Candidate card ─────────────────────────────────────────────────────────────
-function CandidateCard({ candidate, onSave, onStatusChange }: {
+function CandidateCard({ candidate, onSave }: {
   candidate: Candidate
   onSave: (id: string, rating: number | null, notes: string) => Promise<void>
-  onStatusChange: (id: string, status: CandidateStatus) => Promise<void>
 }) {
   const [rating, setRating]   = useState<number | null>(candidate.rating)
   const [notes, setNotes]     = useState(candidate.rating_notes ?? '')
@@ -65,6 +62,13 @@ function CandidateCard({ candidate, onSave, onStatusChange }: {
 
   const initials = candidate.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
   const s = candidate.status
+  const StatusIcon = STATUS[s]?.icon || Clock
+
+  async function handleStatusChange(newStatus: CandidateStatus) {
+    setSaving(true)
+    await onStatusUpdate(candidate.id, newStatus)
+    setSaving(false)
+  }
 
   async function handleRate(n: number | null) {
     setRating(n)
@@ -95,19 +99,9 @@ function CandidateCard({ candidate, onSave, onStatusChange }: {
               <p className="text-xs text-muted-foreground mt-0.5">{candidate.position}</p>
             </div>
           </div>
-          
-          <Select value={s} onValueChange={(val) => onStatusChange(candidate.id, val as CandidateStatus)}>
-            <SelectTrigger className={cn('h-7 text-[10px] w-auto min-w-[100px] border-none focus:ring-0 shrink-0', STATUS[s]?.cls)}>
-              <SelectValue>{STATUS[s]?.label ?? s}</SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {(Object.keys(STATUS) as CandidateStatus[]).map(k => (
-                <SelectItem key={k} value={k} className="text-[11px]">
-                  {STATUS[k].label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Badge variant="outline" className={cn('text-[10px] shrink-0', STATUS[s]?.cls)}>
+            {STATUS[s]?.label ?? s}
+          </Badge>
         </div>
 
         {/* Links */}
@@ -204,21 +198,13 @@ export function ClientCandidatesView() {
     toast.success('Saved')
   }
 
-  async function handleStatusChange(id: string, status: CandidateStatus) {
-    const { error } = await supabase
-      .from('candidates')
-      .update({ status })
-      .eq('id', id)
-    if (error) { toast.error('Failed to update status'); return }
-    setCandidates(prev => prev.map(c => c.id === id ? { ...c, status } : c))
-    toast.success(`Marked as ${STATUS[status].label}`)
-  }
-
   const counts = {
     all:         candidates.length,
     pending:     candidates.filter(c => c.status === 'pending').length,
-    reviewed:    candidates.filter(c => c.status === 'reviewed').length,
-    shortlisted: candidates.filter(c => c.status === 'shortlisted').length,
+    good:        candidates.filter(c => c.status === 'good').length,
+    interviewed: candidates.filter(c => c.status === 'interviewed').length,
+    training:    candidates.filter(c => c.status === 'training').length,
+    hired:       candidates.filter(c => c.status === 'hired').length,
     rejected:    candidates.filter(c => c.status === 'rejected').length,
     hired:       candidates.filter(c => c.status === 'hired').length,
     training:    candidates.filter(c => c.status === 'training').length,
@@ -232,16 +218,16 @@ export function ClientCandidatesView() {
       <div>
         <h1 className="text-2xl font-bold">Candidates</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Review candidates submitted for your team and rate them out of 10.
+          Review candidates submitted for your team, update their status, and rate them out of 10.
         </p>
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="bg-secondary">
-          {(['all', 'pending', 'reviewed', 'shortlisted', 'rejected', 'hired', 'training'] as const).map(s => (
+          {(['all', 'pending', 'reviewed', 'shortlisted', 'rejected'] as const).map(s => (
             <TabsTrigger key={s} value={s} className="text-xs">
               {s === 'all' ? 'All' : STATUS[s].label}
-              <span className="ml-1.5 text-[10px] opacity-60">({counts[s]})</span>
+              <span className="ml-1.5 text-[10px] opacity-40 font-mono">({counts[s]})</span>
             </TabsTrigger>
           ))}
         </TabsList>
@@ -262,7 +248,7 @@ export function ClientCandidatesView() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {visible.map(c => (
-            <CandidateCard key={c.id} candidate={c} onSave={handleSave} onStatusChange={handleStatusChange} />
+            <CandidateCard key={c.id} candidate={c} onSave={handleSave} />
           ))}
         </div>
       )}
