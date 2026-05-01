@@ -23,17 +23,14 @@ import { useAuth } from '@/auth/AuthContext'
 import { cn } from '@/lib/utils'
 import type { Candidate, CandidateStatus, Tenant } from '@/types/database'
 import { toast } from 'sonner'
-import { CheckCircle2, UserPlus, GraduationCap, XCircle, Clock } from 'lucide-react'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 type CandidateWithTenant = Candidate & { tenant?: { id: string; name: string } | null }
 
 const STATUS: Record<CandidateStatus, { label: string; cls: string }> = {
   pending:     { label: 'Pending',     cls: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
-  good:        { label: 'Good',        cls: 'bg-blue-500/20   text-blue-400   border-blue-500/30'   },
-  interviewed: { label: 'Interviewed', cls: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30' },
-  training:    { label: 'Training',    cls: 'bg-purple-500/20 text-purple-400 border-purple-500/30' },
-  hired:       { label: 'Hired',       cls: 'bg-green-500/20  text-green-400  border-green-500/30'  },
+  reviewed:    { label: 'Reviewed',    cls: 'bg-blue-500/20   text-blue-400   border-blue-500/30'   },
+  shortlisted: { label: 'Shortlisted', cls: 'bg-green-500/20  text-green-400  border-green-500/30'  },
   rejected:    { label: 'Rejected',    cls: 'bg-red-500/20    text-red-400    border-red-500/30'     },
 }
 
@@ -354,8 +351,8 @@ export function RecruiterView() {
 
   const stats = [
     { label: 'Total',          value: candidates.length },
-    { label: 'Pending',        value: candidates.filter(c => c.status === 'pending').length },
-    { label: 'Hired',          value: candidates.filter(c => c.status === 'hired').length },
+    { label: 'Awaiting Rating', value: candidates.filter(c => c.rating === null).length },
+    { label: 'Shortlisted',    value: candidates.filter(c => c.status === 'shortlisted').length },
     { label: 'Rated by Client', value: candidates.filter(c => c.rating !== null).length },
   ]
 
