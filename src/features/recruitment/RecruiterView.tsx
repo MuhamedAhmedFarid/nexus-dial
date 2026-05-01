@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   Briefcase, Plus, Trash2, Loader2, Mic2, FileText,
   Building2, Search, Star, MoreHorizontal, Pencil, AlertTriangle,
+  Clock, CheckCircle2, GraduationCap, UserPlus, XCircle
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -27,13 +28,13 @@ import { toast } from 'sonner'
 // ── Types ──────────────────────────────────────────────────────────────────────
 type CandidateWithTenant = Candidate & { tenant?: { id: string; name: string } | null }
 
-const STATUS: Record<CandidateStatus, { label: string; cls: string }> = {
-  pending:     { label: 'Pending',     cls: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
-  good:        { label: 'Good',        cls: 'bg-blue-500/20   text-blue-400   border-blue-500/30'   },
-  interviewed: { label: 'Interviewed', cls: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30' },
-  training:    { label: 'Training',    cls: 'bg-purple-500/20 text-purple-400 border-purple-500/30' },
-  hired:       { label: 'Hired',       cls: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' },
-  rejected:    { label: 'Rejected',    cls: 'bg-red-500/20    text-red-400    border-red-500/30'     },
+const STATUS: Record<CandidateStatus, { label: string; cls: string; icon: any }> = {
+  pending:     { label: 'Pending',     cls: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20', icon: Clock },
+  good:        { label: 'Good',        cls: 'bg-blue-500/10 text-blue-500 border-blue-500/20',     icon: CheckCircle2 },
+  interviewed: { label: 'Interviewed', cls: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20', icon: Search },
+  training:    { label: 'Training',    cls: 'bg-purple-500/10 text-purple-500 border-purple-500/20', icon: GraduationCap },
+  hired:       { label: 'Hired',       cls: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20', icon: UserPlus },
+  rejected:    { label: 'Rejected',    cls: 'bg-red-500/10 text-red-500 border-red-500/20',         icon: XCircle },
 }
 
 const BLANK: FormState = {
@@ -122,7 +123,8 @@ function RecruiterCandidateCard({ c, onEdit, onDelete, onStatus }: {
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-2 border-t border-white/5">
-          <Badge variant="outline" className={cn('text-[10px]', STATUS[s].cls)}>
+          <Badge variant="outline" className={cn('text-[10px] flex items-center gap-1', STATUS[s].cls)}>
+            {STATUS[s].icon && <STATUS.icon className="h-3 w-3" />}
             {STATUS[s].label}
           </Badge>
           {c.rating !== null ? (
