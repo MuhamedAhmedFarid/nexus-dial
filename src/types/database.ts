@@ -1,6 +1,6 @@
 export type UserRole = 'OWNER' | 'ADMIN' | 'HR' | 'BILLING' | 'PAYROLL' | 'AGENT' | 'RECRUITER'
 export type FeatureKey = 'hr' | 'billing' | 'payroll' | 'dialer' | 'recruitment'
-export type CandidateStatus = 'pending' | 'reviewed' | 'shortlisted' | 'rejected'
+export type CandidateStatus = 'pending' | 'good' | 'interviewed' | 'training' | 'hired' | 'rejected'
 
 export interface TenantFeatures {
   hr: boolean
