@@ -1,0 +1,6 @@
+{
+  "name": "Nexus Dial",
+  "description": "Premium outbound sales outsourcing agency specializing in high-ticket verticals including Roofing, Solar, Real Estate, and Web Development.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

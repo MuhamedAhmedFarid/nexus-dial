@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-lightBase: #FFFFFF;
+  --color-offsetLight: #F8FAFC;
+  --color-surfaceLight: #FFFFFF;
+  --color-borderLight: #E2E8F0;
+
+  --color-textPrimary: #0F172A;
+  --color-textSecondary: #475569;
+  --color-textMuted: #64748B;
+
+  --color-trustGreen: #059669;
+
+  --color-sunsetCrimson: #F97316;
+  --color-sunsetGold: #F59E0B;
+  --color-activeCrimson: #DC2626;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --shadow-cardSoft: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-cardHover: 0 20px 25px -5px rgba(249, 115, 22, 0.08), 0 8px 10px -6px rgba(249, 115, 22, 0.08);
+  --shadow-greenGlow: 0 0 15px rgba(5, 150, 105, 0.15);
+
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-marquee: marquee 25s linear infinite;
+
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+}
+
+/* Base Accessibility Style */
+.text-color-accessibility {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Set scroll-behavior and some initial typography details */
+html {
+  scroll-behavior: smooth;
+  background-color: #FFFFFF;
+  color: #0F172A;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
